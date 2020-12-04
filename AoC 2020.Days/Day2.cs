@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AoC_2020
+namespace AoC_2020.Days
 {
     class Day2
     {

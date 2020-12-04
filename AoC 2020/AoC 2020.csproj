@@ -4,7 +4,11 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>AoC_2020</RootNamespace>
-    <StartupObject>AoC_2020.Day3</StartupObject>
+    <StartupObject>AoC_2020.Program</StartupObject>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AoC 2020.Days\AoC 2020.Days.csproj" />
+  </ItemGroup>
 
 </Project>
