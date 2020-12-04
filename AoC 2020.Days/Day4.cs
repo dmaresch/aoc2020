@@ -5,6 +5,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace AoC_2020.Days
 {
@@ -58,43 +59,50 @@ namespace AoC_2020.Days
                 byte validity = 0;
                 passport.Replace('\n', ' ').Split(' ').ToList().ForEach(passVal =>
                 {
+                    if (passVal.Contains('\r')) passVal.Remove(passVal.Length - 1);
                     if (passVal.Split(':')[0] == "byr")
                     {
                         int v = Convert.ToInt32(passVal.Split(':')[1]);
-                        if(!(v.ToString().Length != 4 || v > 2002 || v < 1920)) validity += 1 << 7;
+                        if((v.ToString().Length == 4 && v <= 2002 && v >= 1920)) validity += 1 << 7;
                     }
                     if (passVal.Split(':')[0] == "iyr") 
                     {
                         int v = Convert.ToInt32(passVal.Split(':')[1]);
-                        if(!(v.ToString().Length != 4 || v > 2020 || v < 2010)) validity += 1 << 6;
+                        if((v.ToString().Length == 4 && v <= 2020 && v >= 2010)) validity += 1 << 6;
                     }
                     if (passVal.Split(':')[0] == "eyr")
                     {
                         int v = Convert.ToInt32(passVal.Split(':')[1]);
-                        if(!(v.ToString().Length != 4 || v > 2030 || v < 2020)) validity += 1 << 5;
+                        if((v.ToString().Length == 4 && v <= 2030 && v >= 2020)) validity += 1 << 5;
                     }
                     if (passVal.Split(':')[0] == "hgt") 
                     {
                         string v = passVal.Split(':')[1];
-                        if (v.EndsWith("in")) if (Convert.ToInt32(v.Substring(0, 2)) <= 76 && Convert.ToInt32(v.Substring(0, 2)) >= 59) validity += 1 << 4;
-                        if (v.EndsWith("cm")) if (Convert.ToInt32(v.Substring(0, 2)) <= 193 && Convert.ToInt32(v.Substring(0, 2)) >= 150) validity += 1 << 4;
+                        int val;
+                        Int32.TryParse(v.Remove(v.IndexOf("cm") == -1 ? v.Length-1 : v.IndexOf("cm")), out val);
+                        Int32.TryParse(v.Remove(v.IndexOf("in") == -1 ? v.Length-1 : v.IndexOf("in")), out val);
+                        if (v.EndsWith("in") && val <= 76 && val >= 59) validity += 1 << 4;
+                        if (v.EndsWith("cm") && val <= 193 && val >= 150) validity += 1 << 4;
                     }
                     if (passVal.Split(':')[0] == "hcl")
                     {
-                        string pattern = @"#[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]";
                         string v = passVal.Split(':')[1];
-                        if(new System.Text.RegularExpressions.Regex(pattern).IsMatch(v)) validity += 1 << 3;
+                        if(Regex.Match(v, "^#(?:[0-9a-fA-F]{3}){1,2}$").Success) 
+                            validity += 1 << 3;
                     }
                     if (passVal.Split(':')[0] == "ecl")
                     {
                         List<string> validCol = new List<string>() { "amb", "blu", "brn", "gry", "grn", "hzl", "oth" };
                         string v = passVal.Split(':')[1];
-                        if( validCol.Contains(v)) validity += 1 << 2;
+                        if( validCol.Contains(v)) 
+                            validity += 1 << 2;
                     }
                     if (passVal.Split(':')[0] == "pid")
                     {
                         string v = passVal.Split(':')[1];
-                        if (v.Length == 9 && v.StartsWith("0")) validity += 1 << 1;
+                        bool tp = Int32.TryParse(v, out _);
+                        if (v.Length == 9 && tp) 
+                            validity += 1 << 1;
                     }
                     if (passVal.Split(':')[0] == "cid") validity += 1;
                 });
