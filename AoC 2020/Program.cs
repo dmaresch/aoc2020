@@ -9,7 +9,7 @@ namespace AoC_2020
     {
         static void Main(string[] args)
         {
-            new Day6().Start();
+            new Day8().Start();
         }
     }
 }
